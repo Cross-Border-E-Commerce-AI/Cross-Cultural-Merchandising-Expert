@@ -222,18 +222,103 @@ print(responses)
 
 ## 2. Cultural Dimension Quantification Engine​
 
+### ​2.1 Dynamic Cultural Metric
+
+Based on [​**​Hofstede’s Cultural Dimensions Theory​​**](https://en.wikipedia.org/wiki/Geert_Hofstede) : 
+
+$$C_{ij} = \frac{1}{6} \sum_{k=1}^{6} \frac{H_k^{(i)} - H_k^{(j)}}{SD_k}$$
+
+where **the standard deviation on Hofstede $k^{th}$ dimension**: $SD_k=15.2$ (global data from 128 countries).
+
+### 2.2 Consumer Behavior Mapping via Gradient-Boosted Decision Trees​
+
+- [**GBDT (Gradient-Boosted Decision Trees)**](https://en.wikipedia.org/wiki/Gradient_boosting) : a machine learning algorithm that builds an ensemble of decision trees to improve prediction accuracy.
+
+![Gradient-Boosted Decision Trees](./_assets/GBDT.png)
+
+```python
+  X = pd.DataFrame([power_distance, individualism, ...])  
+  y = sales_data['premium_product_ratio']  
+  model = GradientBoostingRegressor(loss=cultural_loss_function)  
+```
 
 ---
 
 ## 3. Commodity Knowledge Graph Construction​
+*Cultural Distance Calculator 📏: Measure market compatibility like Tinder matches (Swipe right for profit! 💰)*
 
+
+### Cultural Attention Mechanism​​:
+
+$$\alpha_t = \text{softmax}(v^T \tanh(W_h h_t + W_c C_j))$$
+
+where $c_j$ is the **cultural context vector** (*e.g., generated via Halal certification detection*).
+
+[Attention mechanism](https://en.wikipedia.org/wiki/Attention_(machine_learning)) is used to focus on relevant parts of the input sequence when generating the output sequence. The attention weights are computed based on the similarity between the *current hidden state* and the *cultural context vector*.
+
+![attention-QKV](./_assets/Attention-qkv.png)
+![Commodity Knowledge Map](./_assets/knowledge-map.png)
 
 ---
 
 ## 4. Short-Video Demand Signal Capture (TimeSformer-Enhanced)​
 
+*TikTok Trend Oracle 📱: Predict viral products before your competitors finish their morning coffee*
 
+
+### Cross-Modal Alignment and Demand Prediction​
+
+- ​**3D Attention Cube​**​: Processes *video frames*, *multilingual ASR text*, and *cultural symbol annotations*.
+- **Cultural Symbol Detector**​​: Uses [YOLOv5](https://github.com/ultralytics/yolov5) to identify taboo visual elements (*e.g., hexagrams in Middle Eastern markets*).
+
+![yolov5](./_assets/yolov5.png)
+```python
+  class CulturalTimeSformer(TimeSformer):  
+      def forward(self, x):  
+          x = x + positional_encoding(ramadan_calendar)  # Inject Ramadan signals  
+          return super().forward(x)  
+```
 
 ---
 
 ## 5. Expert System with Dynamic Decision Engine​
+
+### 5.1 Case-Based Reasoning for Conflict Validation​
+
+```python
+  def check_cultural_conflict(product, market):  
+      similar_cases = knowledge_graph.query(  
+          f"MATCH (n)-[r:禁忌]->(m) WHERE n.name={product} RETURN r")  
+      return len(similar_cases) > threshold  
+```
+
+### 5.2 Cultural Drift Detection​
+- Monitors shifts in consumer psychology via [**​​KL Divergence​​**](https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence) :
+
+$$D_{KL}(P||Q) = \sum_{i=1}^{n} P(i) \log\left(\frac{P(i)}{Q(i)}\right)$$
+
+- Triggers knowledge graph updates if $σ=2$ threshold is exceeded for $P(Agriculture∣Indonesia)$.
+
+---
+
+## 🤝 How to Contribute
+We welcome cultural spies, code wizards, and emoji translators! **3 ways to join the mission:**
+1. **Add Cultural Lexicons** 📖: Teach our AI your local slang
+2. **Train Trend Detectors** 🔮: Help predict the next big thing
+3. **Fix Cultural Faux Pas** 🚫: Save companies from accidental taboos
+
+
+We're on scheduale ... ![Open Demo](https://img.shields.io/badge/%F0%9F%94%8D%20Live%20Demo-Click%20Here-brightgreen)
+
+
+## 📜 License
+Apache 2.0 - Use freely, but we take no responsibility if:
+
+1. Our AI declares pineapples illegal in Hawaii 🍍👮♂️
+2. Your products become too popular for your warehouse to handle 📦💥
+
+---
+
+**Made with ❤️ by Global Market Wizards​​**
+
+*Because in the game of global commerce, you either win or... accidentally offend 1 billion people.*
