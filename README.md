@@ -36,7 +36,7 @@ Integrates religious symbol detection (`YOLOv5`), Ramadan cycle signal injection
 ### 1.1 Multilingual Dynamic Word Vector Fusion​
 Utilizes `​​XLM-RoBERTa`​​ (extended BERT) for Southeast Asian low-resource languages, fine-tuned on target language (*Indonesian/Thai*) e-commerce review corpora to assess product sentiment for selection:
 
-- **XLM-RoBERTa**: A multilingual transformer model trained on **2.5TB** of filtered `CommonCrawl` data.
+**(1) XLM-RoBERTa**: A multilingual transformer model trained on **2.5TB** of filtered `CommonCrawl` data.
   - *'Unsupervised Cross-lingual Representation Learning at Scale'*: [**arXiv:1911.02116 [cs.CL]**](https://arxiv.org/abs/1911.02116)
   - HuggingFace Docunmentation: [**HuggingFace/Transformer/XLM-RoBERTa**](https://huggingface.co/docs/transformers/en/model_doc/xlm-roberta)
   - Github original code: [**facebookresearch/fairseq/examples/xlmr**](https://github.com/facebookresearch/fairseq/tree/main/examples/xlmr)
@@ -81,6 +81,142 @@ Utilizes `​​XLM-RoBERTa`​​ (extended BERT) for Southeast Asian low-resou
 ```
 
 ![Bright-Data Support Es](./_assets/bright-data.png)
+
+**(2) ​​Culturally sensitive lexicon​**​: Assigns amplified sentiment weights (*e.g., 3x for "Halal" in Indonesian*) with reference to Chinese lexicons:
+
+  - **Chinese Lexicon Preprocessing**: [https://github.com/fighting41love/Chinese_from_dongxiexidian](https://github.com/fighting41love/Chinese_from_dongxiexidian)
+
+```python
+    # Chinese Lexicon Preprocessing: Extraction
+    import re
+    def Chinese_word_extraction(content_raw):
+ 	      chinese_pattern = u"([\u4e00-\u9fa5]+)"
+ 	      chi_pattern = re.compile(chinese_pattern)
+ 	      re_data = chi_pattern.findall(content_raw)
+ 	      content_clean  = ' '.join(re_data)
+
+    # Chinese Lexicon Preprocessing: Traditional 2 Simplified
+    from hanziconv import HanziConv
+    def tra2sim(content):
+ 	      content = HanziConv.toSimplified(content)
+
+    # Chinese Lexicon Preprocessing: Replacement Dictionary example
+    replace_dict = {
+ 	      u'装13':u'装逼',
+ 	      u'弓虽':u'强',
+ 	      u'毛子':u'俄罗斯人', ...}
+```
+- **Sensitive-word filtering framework**: [https://github.com/houbb/sensitive-word](https://github.com/houbb/sensitive-word)
+
+  `--v0.25.0` supports the following strategies with user-defined implementations.
+
+| # | Method                   | Details (Chinese)                                         | Implementation   |
+|:---|:---------------------|:-------------------------------------------|:------|
+| 16 | wordCheckNum          | 数字检测策略(v0.25.0开始支持)                        | `WordChecks.num()`   |
+| 17 | wordCheckEmail          | 邮箱检测策略(v0.25.0开始支持)                        | `WordChecks.email()`   |
+| 18 | wordCheckUrl          | URL检测策略(v0.25.0开始支持)，内置还是实现了 `urlNoPrefix()` | `(WordChecks.url()`   |
+| 19 | wordCheckIpv4          | ipv4检测策略(v0.25.0开始支持)                      | `WordChecks.ipv4()`   |
+| 20 | wordCheckWord          | 敏感词检测策略(v0.25.0开始支持)                       | `WordChecks.word()`   |
+
+
+**(3) Unstructured data processing**: Regex-based extraction of *TikTok hashtags* (e.g., `#RamadanSale`), mapping emojis to cultural sentiment symbols (e.g., 👍 denotes **negativity** in Thailand).
+
+- Apachecn-ds-zh's  `RegexpParser` : [https://github.com/apachecn/apachecn-ds-zh/blob/master/docs/nlp-py-2e/7.md](https://github.com/apachecn/apachecn-ds-zh/blob/master/docs/nlp-py-2e/7.md)
+
+![apachecn-ds-zh example](./_assets/apachecn-ds-zh.jpg)
+
+
+### 1.2 Cultural Context-Aware Topic Clustering​
+
+Enhances `​​LDA` ([**Latent Dirichlet Allocation**](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation))​​ with cultural dimension constraints:
+- **Cultural Dimension**: Based on *Hofstede’s cultural dimensions* (e.g., power distance, individualism, masculinity, uncertainty avoidance, long-term orientation, indulgence), we establish a **cultural metric matrix** to quantify the cultural distance between different countries.
+- **Cultural Weighting**: The cultural metric matrix is used to adjust the weights of words in the LDA model, enhancing the model's sensitivity to cultural context.
+- **Cultural Context**: The model captures the cultural context of the text data, allowing for more accurate topic clustering and sentiment analysis.
+
+![LDA-model](./_assets/LDA-model.png)
+
+```python
+  class CulturalLDA(LatentDirichletAllocation):  
+      def _e_step(self, X):  
+          # Hofstede's power distance adjustment 
+          adjusted_X = X * cultural_weights_matrix  
+          return super()._e_step(adjusted_X)  
+```
+
+**Visualization**: Generates cultural topic radar charts highlighting taboo-sensitive regions (*e.g., religious clusters for Malaysia*).
+The following is a ethical map example chart:
+
+![ethic-map](./_assets/ethnic-map.jpg)
+
+
+## Mature Qwen3 Altrenative Stack with `Qwen-Agent`​:
+
+- **​​Qwen3​​** supports **119** languages/dialects [(Qwen3 Chinese Official Website)](https://qwenlm.github.io/zh/blog/qwen3/).
+
+![Qwen3-Language-Support](./_assets/qwen3-language.png)
+
+- **Qwen-Agent**​​ enhances `function_tool_calling` and **MCP (Model Context Protocol)** capabilities:
+  - **Qwen-Agent** GitHub Demo: [https://github.com/QwenLM/Qwen-Agent](https://github.com/QwenLM/Qwen-Agent)
+  - **MCP (Model Context Protocol)**: [https://github.com/modelcontextprotocol](https://github.com/modelcontextprotocol)
+
+```python
+from qwen_agent.agents import Assistant
+
+# Define LLM
+llm_cfg = {
+    'model': 'Qwen3-30B-A3B',
+
+    # Use the endpoint provided by Alibaba Model Studio:
+    # 'model_type': 'qwen_dashscope',
+    # 'api_key': os.getenv('DASHSCOPE_API_KEY'),
+
+    # Use a custom endpoint compatible with OpenAI API:
+    'model_server': 'http://localhost:8000/v1',  # api_base
+    'api_key': 'EMPTY',
+
+    # Other parameters:
+    # 'generate_cfg': {
+    # ADD: When the response content is `<think>this is the thought</think>this is the answer;
+    # DO NOT ADD: When the response has been separated by reasoning_content and content.
+    #         'thought_in_content': True,
+    #     },
+}
+
+# Define Tools
+tools = [
+    {'mcpServers': {  # You can specify the MCP configuration file
+            'time': {
+                'command': 'uvx',
+                'args': ['mcp-server-time', '--local-timezone=Asia/Shanghai']
+            },
+            "fetch": {
+                "command": "uvx",
+                "args": ["mcp-server-fetch"]
+            }
+        }
+    },
+  'code_interpreter',  # Built-in tools
+]
+
+# Define Agent
+bot = Assistant(llm=llm_cfg, function_list=tools)
+
+# Streaming generation
+messages = [{'role': 'user', 'content': '<your_message_content>'}]
+for responses in bot.run(messages=messages):
+    pass
+print(responses)
+```
+- **Some useful MCP** that can be addressed for *Cross-Cultural Merchandising Expert* ​:
+  - [**Audiense Insights**](https://github.com/AudienseCo/mcp-audiense-insights) : Marketing insights and audience analysis from Audiense reports, covering demographic, cultural, influencer, and content engagement analysis.
+  - [**Tavily Search**](https://github.com/tavily-ai/tavily-mcp) : Provides a search engine for e-commerce products, enabling users to find products based on various criteria such as category, price, and reviews.
+  - [**Browser Base**](https://github.com/browserbase/mcp-server-browserbase): Provides a web browser interface for interacting with web pages, allowing users to perform actions such as clicking buttons, filling forms, and extracting data.
+
+
+- **RAG (Retrieval-Augmented Generation)**: Dynamically constructs for [cultural lexicons]() and [unstructured data labels]().
+  - **Inginit Flow/RAG_Flow** GitHub Repo : [https://github.com/infiniflow/ragflow]((https://github.com/infiniflow/ragflow))
+
+![Rag Flow](./_assets/ragflow.png)
 
 ---
 
