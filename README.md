@@ -214,7 +214,7 @@ print(responses)
 
 
 - **RAG (Retrieval-Augmented Generation)**: Dynamically constructs for [cultural lexicons]() and [unstructured data labels]().
-  - **Inginit Flow/RAG_Flow** GitHub Repo : [https://github.com/infiniflow/ragflow]((https://github.com/infiniflow/ragflow))
+  - **Inginit Flow/RAG_Flow** GitHub Repo : [https://github.com/infiniflow/ragflow](https://github.com/infiniflow/ragflow)
 
 ![Rag Flow](./_assets/ragflow.png)
 
