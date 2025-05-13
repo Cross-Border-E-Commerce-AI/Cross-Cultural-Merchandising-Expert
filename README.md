@@ -84,6 +84,26 @@ Utilizes `​​XLM-RoBERTa`​​ (extended BERT) for Southeast Asian low-resou
 
 **(2) ​​Culturally sensitive lexicon​**​: Assigns amplified sentiment weights (*e.g., 3x for "Halal" in Indonesian*) with reference to Chinese lexicons:
 
+![Cultural Sensitive Lexicon](./_assets/cultural%20sensitive%20lexicon.png)
+
+
+- **Example Multimodal Validation Tunnels**
+
+| Data Source             | Validation Method                  | Confidence Weight |
+| ----------------------- | ---------------------------------- | ----------------- |
+| Religious Texts Update  | TF-IDF Weighted Topic Matching     | 0.9               |
+| Government Announcements | Rule-Based Format Parsing          | 0.85              |
+| Livestream Comments     | LSTM Sentiment Polarity Analysis   | 0.75              |
+| Cross-border Returns    | Keyword-Reason Association Graph | 0.8               |
+
+- **Cultural Sensitivity Index (CSI)**:
+
+$$CSI(w) = \alpha \cdot \frac{f_w^{cultural}}{f_w^{general}} + \beta \cdot \sum_{d=1}^{6} \frac{|v_w \cdot h_d|}{||v_w|| \cdot ||h_d||}$$
+
+Where $\alpha = 0.6, \beta = 0.4$ are adjustment coefficients, 
+$h_d$ represents the unit vector of Hofstede's six cultural dimensions, and
+$f_w^{cultural}$ is the word frequency in religious/taboo-related materials.
+
   - **Chinese Lexicon Preprocessing**: [https://github.com/fighting41love/Chinese_from_dongxiexidian](https://github.com/fighting41love/Chinese_from_dongxiexidian)
 
 ```python
